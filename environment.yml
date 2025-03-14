@@ -1,0 +1,15 @@
+name: de372
+
+dependencies:
+  - cartopy
+  - folium
+  - mapclassify
+  - ipykernel
+  - python==3.11
+  - pip
+  - pip:
+    - git+https://github.com/Deltares-research/FloodAdapt.git@76ab1805425aca6496e38529e7e1c404f08b9e26
+    - solara
+    - ipyleaflet
+    - localtileserver
+    - jupyter
