@@ -16,7 +16,7 @@ tab = solara.reactive('Event')
 
 
 @solara.component
-def Page():
+def Page(database):
 
     m = Map(center=(52.08654741528378, 4.295223531699989), zoom=10, scroll_wheel_zoom=True, basemap=basemaps.OpenStreetMap.Mapnik)
 
@@ -36,11 +36,10 @@ def Page():
             display(m) 
 
         with solara.Column(style={"width": "30%", "min-width": "500px"}):
-            SettingsTabs(m, selected_tab=tab, selected_view=view)
-
+            SettingsTabs(m, database, selected_tab=tab, selected_view=view)
 
 @solara.component
-def SettingsTabs(m, selected_tab, selected_view):
+def SettingsTabs(m, database, selected_tab, selected_view):
     with solara.Column(style={"width": "100%", "align-items": "center"}):
         with solara.Row(gap="10px", style={"justify-content": "flex-start", "width": "80%"}):
             solara.Button("Event", on_click=lambda: (selected_tab.set('Event'), selected_view.set(None)))

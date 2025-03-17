@@ -1,5 +1,8 @@
 import solara
 
+from flood_adapt.api.measures import get_measures
+from flood_adapt.api.strategies import create_strategy, save_strategy
+
 from draw_utils import update_draw_tools_none
 
 strategyName = solara.reactive("Strategy Name")
@@ -7,20 +10,30 @@ strategyName = solara.reactive("Strategy Name")
 error_message = solara.reactive("")
 output_message = solara.reactive("")
 
-
-def _fetch_measures():
-    measures = ["M1", "M2"]
-    return measures
-
 def _save_strategy(STRATEGY, MEASURES, output_message, error_message):
-    name = STRATEGY.value
+    # Reset output message
+    output_message.set("")
+    error_message.set("")
 
+    # Unpack solara elemens
+    name = STRATEGY.value
     measure_list = [key for key, comp in MEASURES.items() if comp.value]
 
-    msg = f"Saving {measure_list} to {name}"
+    # Save strategy to database
+    strat_dct = {
+        "name": name,
+        "measures": measure_list,
+        }
+    
+    try:
+        strat = create_strategy(strat_dct)
+        save_strategy(strat)
 
-    error_message.set("")
-    output_message.set(f"{msg}\nTODO: implement save strategy")
+        msg = f"Saving measures {measure_list} to strategy {name}"
+        output_message.set(f"{msg}")
+    except Exception as e:
+        error_message.set(f"**ERROR**: {e}")
+    
 
     # Reset solara components
     STRATEGY.set("Strategy Name")
@@ -36,7 +49,7 @@ def TabStrategy(m):
     with solara.Card("Strategy Name", style={"width": "100%", "padding": "10px"}):
         solara.InputText("Strategy Name", value=strategyName, continuous_update=True)
         
-        measure_list = _fetch_measures()
+        measure_list = get_measures()["name"]
         measure_comps = {k: solara.use_reactive(False) for k in measure_list}
 
         for key, value in measure_comps.items():

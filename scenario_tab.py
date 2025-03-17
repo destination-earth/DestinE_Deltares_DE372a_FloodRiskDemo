@@ -1,5 +1,10 @@
 import solara
 
+from flood_adapt.api.events import get_events
+from flood_adapt.api.projections import get_projections
+from flood_adapt.api.strategies import get_strategies
+from flood_adapt.api.scenarios import create_scenario, save_scenario
+
 from draw_utils import update_draw_tools_none
 
 scenarioName = solara.reactive("Scenario Name")
@@ -22,7 +27,20 @@ def _save_scenario(SCENARIO, EVENT, PROJECTION, STRATEGY, output_message, error_
     strategy = STRATEGY.value
 
     # Save scenario to database
-    output_message.set(f"Saving {name}\nTODO: implement save scenario")
+    scen_dct = {
+        "name": name,
+        "event": event,
+        "projection": projection,
+        "strategy": strategy
+    }
+
+    try:
+        scen = create_scenario(scen_dct)
+        save_scenario(scen)
+
+        output_message.set(f"Saving scenario {name}")
+    except Exception as e:
+        error_message.set(f"**ERROR**: {e}")
 
     # Reset solara elements
     SCENARIO.set("Scenario Name")
@@ -31,24 +49,15 @@ def _save_scenario(SCENARIO, EVENT, PROJECTION, STRATEGY, output_message, error_
     STRATEGY.set("")
 
 
-def _fetch_fa_objs():
-    # events = db.events.get()
-    events = ["E1", "E2"]
-    # projections = db.projections.get()
-    projections = ["P1", "P2"]
-    # strategies = db.strategy.get()
-    strategies = ["S1", "S2"]
-
-    return events, projections, strategies
-
-
 @solara.component
 def TabScenario(m):
     update_draw_tools_none(m) 
 
     with solara.Card("Initialise Scenario", style={"width": "100%", "padding": "10px"}):
 
-        all_events, all_projections, all_strategies = _fetch_fa_objs()
+        all_events = get_events()["name"]
+        all_projections = get_projections()["name"]
+        all_strategies = get_strategies()["name"]
 
         solara.InputText("Scenario Name", value=scenarioName, continuous_update=True)
         solara.Markdown(f"**Your Scenario Name**: {scenarioName.value}")
