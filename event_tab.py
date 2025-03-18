@@ -1,6 +1,7 @@
 import solara
 import datetime as dt
 
+from flood_adapt.api.events import create_event, save_event
 from flood_adapt.dbs_classes.database import Database
 from flood_adapt.object_model.hazard.interface.events import Template
 from flood_adapt.object_model.hazard.event.event_factory import EventFactory
@@ -12,7 +13,9 @@ from wind_tab import WindTab
 from draw_utils import update_draw_tools_none
 
 start_date = solara.reactive(dt.date.today())
+start_time = solara.reactive(dt.time(0,0,0))
 end_date = solara.reactive(dt.date.today())
+end_time = solara.reactive(dt.time(0,0,0))
 
 output_message = solara.reactive("")
 error_message = solara.reactive("")
@@ -21,9 +24,13 @@ def EventTimeTab():
 
     solara.Text("Select the Start Date:")
     solara.lab.InputDate(start_date)
-    
+    solara.Text("Select Start Time")
+    solara.lab.InputTime(start_time)
+
     solara.Text("Select the End Date:")
     solara.lab.InputDate(end_date)
+    solara.Text("Select End Time")
+    solara.lab.InputTime(end_time)
     
     if end_date.value < start_date.value:
         solara.Markdown("**Warning**: The end date cannot be earlier than the start date.", style={"color": "red"})
@@ -45,7 +52,6 @@ def EventForcingTab(etype,FORCING_NAME, FORCING_SOURCE, FORCING_LIST):
         label="Data source", 
         value=FORCING_SOURCE, 
         values=forcing_sources,
-        # on_value=lambda x: _clear_forcing(),
         )
 
     match FORCING_NAME.value:
@@ -63,9 +69,6 @@ def EventForcingTab(etype,FORCING_NAME, FORCING_SOURCE, FORCING_LIST):
     
 
 def _display_event_builder(EVENT_TYPE, EVENT_TAB, FORCING_NAME, FORCING_SOURCE, FORCING_LIST):
-
-    start_date.set(dt.date.today())
-    end_date.set(dt.date.today())
 
     etype = EVENT_TYPE.value
     if etype is None:
@@ -85,28 +88,48 @@ def _display_event_builder(EVENT_TYPE, EVENT_TAB, FORCING_NAME, FORCING_SOURCE, 
         case "Forcing":
             EventForcingTab(etype,FORCING_NAME, FORCING_SOURCE, FORCING_LIST)
 
-def _save_inputs(event, start, end, output_message):
+def _parse_forcing_list(forcing_list):
+    forcing_dict = {}
+    for forcing in forcing_list:
+        forcing_dict.update(
+            {forcing.type.value: [forcing]}
+        )
+    return forcing_dict
+
+def _save_inputs(EVENT, ETYPE, start, end, FORCINGS, output_message, error_message):
     # Reset output message
     output_message.set("")
+    error_message.set("")
 
     # Unpack solara elements
-    event_name = event.value
-    start_date = start.value
-    end_date = end.value
+    event_name = EVENT.value
+    etype = ETYPE.value
+    forcings = FORCINGS.value
 
     # Save event to database
-    event_dict = {}
-    event_dict["name"] = event_name
-    event_dict["start_time"] = start_date.strftime('%Y-%m-%d %H:%M:%S')
-    event_dict["end_time"] = end_date.strftime('%Y-%m-%d %H:%M:%S')
-    event_dict["data_catalogues"] = ''
-    event_dict["sfincs_forcing"] = {'meteo': '', 'waterlevel': ''}
-    output_message.set("Event saved!")
+    event_dict = {
+        "name": event_name,
+        "time": {
+            "start_time": start,
+            "end_time": end
+        },
+        "template": etype,
+        "mode": "single_event",
+        "forcings": _parse_forcing_list(forcings)
+    }
+
+    try:
+        event = create_event(event_dict)
+        save_event(event)
+
+        output_message.set(f"Saving Event {event_name}")
+    except Exception as e:
+        error_message.set(f"**ERROR**: {e}")
 
     # Reset solara elements
-    event.set("Event Name")
-    start.set(dt.date.today())
-    end.set(dt.date.today())
+    EVENT.set("Event Name")
+    ETYPE.set(None)
+    FORCINGS.set([])
 
 
 @solara.component
@@ -136,17 +159,32 @@ def TabEvent(m):
             forcingList
             )
         
+        start = dt.datetime.combine(start_date.value, start_time.value)
+        end = dt.datetime.combine(end_date.value, end_time.value)
+
         def save():
             _save_inputs(
-                event=eventName,
-                start=start_date,
-                end=end_date,
-                output_message=output_message
+                EVENT=eventName,
+                ETYPE=eventType,
+                start=start,
+                end=end,
+                FORCINGS=forcingList,
+                output_message=output_message,
+                error_message=error_message
             )
+            start_date.set(dt.date.today())
+            start_time.set(dt.time(0,0,0))
+            end_date.set(dt.time.today())
+            end_time.set(dt.time(0,0,0))
+
+
+        solara.Markdown(f"**Forcings stored**: {forcingList.value}")
+        solara.Markdown(f"**Time stored**: start {start}, end {end}")
+        if output_message.value:
+            solara.Markdown(f"**{output_message.value}**")
+        if error_message.value:
+            solara.Markdown(f"{error_message.value}", style={'color': 'red'})
 
         solara.Button("Save Inputs", on_click=save)
 
-        solara.Markdown(f"**Forcings stored**: {forcingList.value}")
-
-        if output_message.value:
-            solara.Markdown(f"**{output_message.value}**")
+        
