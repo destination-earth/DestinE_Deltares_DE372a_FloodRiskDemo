@@ -41,4 +41,10 @@ def draw_tools_measure(m, MTYPE):
     m.add(draw_control)
 
 def _handle_draw(target, action, geo_json, GEOM):
-    GEOM.set(geo_json)
+    if action == 'remove':
+        GEOM.set(None)
+        target.clear()
+    else:
+        # geo_json will be a singleton list containing the dict
+        geometry = geo_json[0]["geometry"]
+        GEOM.set({"action": action, "chosen": geometry})

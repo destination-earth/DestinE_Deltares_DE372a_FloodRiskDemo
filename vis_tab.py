@@ -14,11 +14,11 @@ def _on_checkbox_change(checkbox, check_list):
         if check != checkbox:
             check.set(False)
 
-feature = []
-
 @solara.component
 def TabVisualisation(m, TAB, GEOM):
     with solara.Card("Map Visualisation", style={"width": "100%", "padding": "10px"}):
+
+        error_message = solara.use_reactive("")
 
         check_list = [
             check_floodmap,
@@ -27,7 +27,7 @@ def TabVisualisation(m, TAB, GEOM):
         ]
 
         def handle_draw(self, action, geo_json):
-                _handle_draw(self, action, geo_json, GEOM)
+            _handle_draw(self, action, geo_json, GEOM)
 
         def on_checkbox_change(check):
             _on_checkbox_change(check, check_list=check_list)
@@ -37,6 +37,7 @@ def TabVisualisation(m, TAB, GEOM):
             for control in m.controls:
                 if isinstance(control, GeomanDrawControl):
                     control.on_draw(handle_draw)
+                        
         else:
             GEOM.set(None)
             for control in m.controls:
@@ -47,6 +48,8 @@ def TabVisualisation(m, TAB, GEOM):
 
         display(m)
         
+        if error_message.value:
+            solara.Markdown(f"{error_message}", style={"color": "red"})
         solara.Markdown("<span style='color: #4682B4;'><b>Please Note:</b> The  generation of figures may take some seconds.</span>")
         solara.Markdown("If Metrics do not show, select the static option.")
         solara.Markdown("**Selection**:")
@@ -57,5 +60,4 @@ def TabVisualisation(m, TAB, GEOM):
             with solara.Div(style={"margin-left": "20px"}): 
                 solara.Checkbox(label="Metrics (static)", value=check_metrics_static, on_value=lambda v: on_checkbox_change(check_metrics) if v else None)
 
-        solara.Markdown(f"{feature}")
         solara.Markdown(f"**Selected Geoms**: {GEOM.value}")
