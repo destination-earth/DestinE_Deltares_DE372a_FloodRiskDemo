@@ -3,8 +3,6 @@ import solara
 from flood_adapt.api.measures import get_measures
 from flood_adapt.api.strategies import create_strategy, save_strategy
 
-from draw_utils import update_draw_tools_none
-
 strategyName = solara.reactive("Strategy Name")
 
 error_message = solara.reactive("")
@@ -44,8 +42,7 @@ def _save_strategy(STRATEGY, MEASURES, output_message, error_message):
 
 
 @solara.component
-def TabStrategy(m): 
-    update_draw_tools_none(m) 
+def TabStrategy(): 
     with solara.Card("Strategy Name", style={"width": "100%", "padding": "10px"}):
         solara.InputText("Strategy Name", value=strategyName, continuous_update=True)
         

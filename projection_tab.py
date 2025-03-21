@@ -3,8 +3,6 @@ import solara
 from flood_adapt.dbs_classes.database import Database
 from flood_adapt.api.projections import create_projection, save_projection
 
-from draw_utils import update_draw_tools_none
-
 SLR_input = solara.reactive(0.0)
 RAIN_input = solara.reactive(0.0)
 POP_input = solara.reactive(0.0)
@@ -53,10 +51,7 @@ def _save_inputs_projections(name, SLR, RAIN, POP, ECON, output_message, error_m
         ECON.set(0.0)
 
 @solara.component
-def TabProjections(m):
-
-    update_draw_tools_none(m)
-    
+def TabProjections():    
 
     with solara.Card("Projections", style={"width": "100%", "padding": "10px"}):
         solara.InputText("Projection Name", value=projName, continuous_update=True)

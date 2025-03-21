@@ -5,8 +5,6 @@ from flood_adapt.api.projections import get_projections
 from flood_adapt.api.strategies import get_strategies
 from flood_adapt.api.scenarios import create_scenario, save_scenario
 
-from draw_utils import update_draw_tools_none
-
 scenarioName = solara.reactive("Scenario Name")
 selected_event = solara.reactive("")
 selected_projection = solara.reactive("")
@@ -50,8 +48,7 @@ def _save_scenario(SCENARIO, EVENT, PROJECTION, STRATEGY, output_message, error_
 
 
 @solara.component
-def TabScenario(m):
-    update_draw_tools_none(m) 
+def TabScenario():
 
     with solara.Card("Initialise Scenario", style={"width": "100%", "padding": "10px"}):
 

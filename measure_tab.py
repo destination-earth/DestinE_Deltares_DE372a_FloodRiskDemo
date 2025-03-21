@@ -1,7 +1,5 @@
 import solara
 
-from draw_utils import update_draw_tools_none, draw_tools_measure
-
 measure_types = [
     "Floodwall",
     "Pump",
@@ -26,11 +24,12 @@ volume_storage = solara.reactive(0)
 elevation_prop = solara.reactive(0)
 elevation_floodproof = solara.reactive(0)
 
-selected_geometry = solara.reactive(None)
 error_message = solara.reactive("")
 output_message = solara.reactive("")
 
 def _save_measure(GEOM, output_message, error_message):
+    output_message.set("")
+    error_message.set("")
     if GEOM.value is None:
         error_message.set("**ERROR**: Please place a measure on the map")
         return
@@ -40,8 +39,8 @@ def _save_measure(GEOM, output_message, error_message):
     GEOM.set(None)
 
 @solara.component
-def TabMeasures(m):
-    update_draw_tools_none(m) 
+def TabMeasures(GEOM):
+
     with solara.Card("Measures", style={"width": "100%", "padding": "10px"}):
         solara.InputText("Measure Name", value=measureName, continuous_update=True)
         solara.Markdown(f"**Your Measure Name**: {measureName.value}")
@@ -69,13 +68,13 @@ def TabMeasures(m):
         case "Buyout properties":
             pass
 
-    solara.use_effect(lambda: draw_tools_measure(m, measureType), [measureType.value])
-
     solara.Markdown("Place the measure on the map")
+
+    solara.Markdown(f"Selected geom: {GEOM.value}")
 
     def save_measure():
         _save_measure(
-            GEOM=selected_geometry,
+            GEOM=GEOM,
             output_message=output_message,
             error_message=error_message
         )

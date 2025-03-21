@@ -10,7 +10,6 @@ from discharge_tab import DischargeTab
 from rainfall_tab import RainfallTab
 from waterlevel_tab import WaterlevelTab
 from wind_tab import WindTab
-from draw_utils import update_draw_tools_none
 
 start_date = solara.reactive(dt.date.today())
 start_time = solara.reactive(dt.time(0,0,0))
@@ -133,7 +132,7 @@ def _save_inputs(EVENT, ETYPE, start, end, FORCINGS, output_message, error_messa
 
 
 @solara.component
-def TabEvent(m):
+def TabEvent():
 
     eventName = solara.use_reactive("Event Name")
     eventTab = solara.use_reactive("Time")
@@ -142,8 +141,6 @@ def TabEvent(m):
     forcingName = solara.use_reactive("RAINFALL")
     forcingSource = solara.use_reactive(None)
     forcingList = solara.use_reactive([])
-
-    update_draw_tools_none(m)
     
     with solara.Card("Configure the Weather Event", style={"width": "100%", "padding": "10px"}):
         solara.InputText("Event Name", value=eventName, continuous_update=True)
