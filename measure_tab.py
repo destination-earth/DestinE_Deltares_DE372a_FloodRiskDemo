@@ -23,7 +23,7 @@ def _save_measure(name, mtype, geometry, attrs, filepath):
     save_measure(measure)
         
 @solara.component
-def _floodwallTab(MATTRS, units):
+def _elevTab(MATTRS, units):
     measureValue = solara.use_reactive(0)
     solara.InputFloat(label="Elevation [m]", value=measureValue, continuous_update=True)
     measure_dict = {
@@ -35,7 +35,7 @@ def _floodwallTab(MATTRS, units):
     MATTRS.set(measure_dict)
 
 @solara.component
-def _pumpTab(MATTRS, units):
+def _dischargeTab(MATTRS, units):
     measureValue = solara.use_reactive(0)
     solara.InputFloat(label="Discharge [m³/s]", value=measureValue, continuous_update=True)
     measure_dict = {
@@ -99,18 +99,12 @@ def TabMeasures(GEOM):
         solara.Select(label="Measure Type", value=measureType, values=measure_types)
 
         match measureType.value:
-            case "floodwall":
-                _floodwallTab(MATTRS=measureAttrs, units=units)
-            case "thin_dam":
-                _floodwallTab(MATTRS=measureAttrs, units=units)
-            case "levee":
-                _floodwallTab(MATTRS=measureAttrs, units=units)
+            case "floodwall" | "thin_dam" | "levee" | "elevate_properties" | "floodproof_properties":
+                _elevTab(MATTRS=measureAttrs, units=units)
             case "pump" | "culvert":
-                _pumpTab(MATTRS=measureAttrs, units=units)
+                _dischargeTab(MATTRS=measureAttrs, units=units)
             case "water_square" | "total_storage" | "greening":
                 _storageTab(MATTRS=measureAttrs, units=units)
-            case "elevate_properties" | "floodproof_properties":
-                _floodwallTab(MATTRS=measureAttrs, units=units)
             case "buyout_properties":
                 _buyoutTab(MATTRS=measureAttrs, units=units)
 

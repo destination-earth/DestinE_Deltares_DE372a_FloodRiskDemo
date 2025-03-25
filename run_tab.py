@@ -3,11 +3,6 @@ import solara
 from flood_adapt.api.scenarios import get_scenarios
 from flood_adapt.dbs_classes.database import Database
 
-selected_scenario = solara.reactive("")
-output_message = solara.reactive("")
-error_message = solara.reactive("")
-
-
 def _run_scenario(SCENARIO, output_message, error_message):
     if SCENARIO.value is None:
         error_message.set("**ERROR**: No scenario selected")
@@ -25,6 +20,10 @@ def _run_scenario(SCENARIO, output_message, error_message):
 
 @solara.component
 def TabRun():
+
+    selected_scenario = solara.use_reactive()
+    output_message = solara.use_reactive()
+    error_message = solara.use_reactive()
 
     with solara.Card("Save inputs and Run model", style={"width": "100%", "padding": "10px"}):
 
