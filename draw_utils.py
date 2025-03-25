@@ -47,4 +47,4 @@ def _handle_draw(target, action, geo_json, GEOM):
     else:
         # geo_json will be a singleton list containing the dict
         geometry = geo_json[0]["geometry"]
-        GEOM.set({"action": action, "chosen": geometry})
+        GEOM.set(geometry)

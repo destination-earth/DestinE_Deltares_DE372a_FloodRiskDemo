@@ -58,7 +58,7 @@ def EventForcingTab(etype,FORCING_NAME, FORCING_SOURCE, FORCING_LIST):
             if Database().site.attrs.sfincs.river:
                 DischargeTab(FORCING_LIST, FORCING_SOURCE)
             else:
-                solara.Markdown("**SFINCS model does not contain rivers**")
+                solara.Markdown("**SFINCS model does not contain rivers**", style={"color": "red"})
         case "RAINFALL":
             RainfallTab(FORCING_LIST, FORCING_SOURCE)
         case "WATERLEVEL":

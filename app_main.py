@@ -1,5 +1,8 @@
 import solara
 
+from flood_adapt.api.static import read_database
+from flood_adapt.misc.config import Settings, UnitSystem
+
 from event_tab import TabEvent
 from projection_tab import TabProjections
 from measure_tab import TabMeasures
@@ -10,11 +13,21 @@ from vis_tab import TabVisualisation
 from draw_utils import draw_map_controls
 
 @solara.component
-def Page(database):
+def Page(database_fn, unit_system="metric"):
 
     view = solara.use_reactive(None)
     tab = solara.use_reactive("Event")
     geom = solara.use_reactive(None)
+
+    units = UnitSystem(system=unit_system)
+    settings = Settings(
+        DATABASE_ROOT=database_fn.parent,
+        DATABASE_NAME=database_fn.stem,
+        SYSTEM_FOLDER=database_fn/"system",
+        unit_system=units
+    )
+
+    db = read_database(database_path=database_fn.parent, site_name=database_fn.stem)
 
     m = draw_map_controls()
 
