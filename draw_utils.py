@@ -1,11 +1,18 @@
-from ipyleaflet import GeomanDrawControl, Map, basemaps
+import leafmap.leafmap as leafmap
+from ipyleaflet import GeomanDrawControl, basemaps, DrawControl, WidgetControl
 
-def draw_map():
-    m = Map(center=(52.08654741528378, 4.295223531699989), zoom=10, scroll_wheel_zoom=True, basemap=basemaps.OpenStreetMap.Mapnik)
+def draw_map(center):
+    m = leafmap.Map(center=center, zoom=13, scroll_wheel_zoom=True, basemap=basemaps.OpenStreetMap.Mapnik)
+    for control in m.controls:
+        if isinstance(control, DrawControl) or isinstance(control, WidgetControl):
+            m.remove(control)
     return m
 
-def draw_map_controls():
-    m = Map(center=(52.08654741528378, 4.295223531699989), zoom=10, scroll_wheel_zoom=True, basemap=basemaps.OpenStreetMap.Mapnik)
+def draw_map_controls(center):
+    m = leafmap.Map(center=center, zoom=13, scroll_wheel_zoom=True, basemap=basemaps.OpenStreetMap.Mapnik)
+    for control in m.controls:
+        if isinstance(control, DrawControl) or isinstance(control, WidgetControl):
+            m.remove(control)
     draw_control = GeomanDrawControl()
     m.add_control(draw_control)
     
