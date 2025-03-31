@@ -3,15 +3,15 @@ import solara
 from flood_adapt.api.static import read_database
 from flood_adapt.misc.config import Settings, UnitSystem
 
-from event_tab import TabEvent
-from projection_tab import TabProjections
-from measure_tab import TabMeasures
-from strategy_tab import TabStrategy
-from scenario_tab import TabScenario
-from run_tab import TabRun
-from vis_tab import TabVisualisation
-from draw_utils import draw_map_controls
-from plot_utils import plot_metrics
+from demonstrator.tabs.event_tab import TabEvent
+from demonstrator.tabs.projection_tab import TabProjections
+from demonstrator.tabs.measure_tab import TabMeasures
+from demonstrator.tabs.strategy_tab import TabStrategy
+from demonstrator.tabs.scenario_tab import TabScenario
+from demonstrator.tabs.run_tab import TabRun
+from demonstrator.tabs.vis_tab import TabVisualisation
+from demonstrator.utils.draw_utils import draw_map_controls
+from demonstrator.utils.plot_utils import plot_metrics
 
 @solara.component
 def Page(database_fn, unit_system="metric"):

@@ -6,10 +6,10 @@ from flood_adapt.dbs_classes.database import Database
 from flood_adapt.object_model.hazard.interface.events import Template
 from flood_adapt.object_model.hazard.event.event_factory import EventFactory
 
-from discharge_tab import DischargeTab
-from rainfall_tab import RainfallTab
-from waterlevel_tab import WaterlevelTab
-from wind_tab import WindTab
+from demonstrator.tabs.forcing.discharge_tab import DischargeTab
+from demonstrator.tabs.forcing.rainfall_tab import RainfallTab
+from demonstrator.tabs.forcing.waterlevel_tab import WaterlevelTab
+from demonstrator.tabs.forcing.wind_tab import WindTab
 
 start_date = solara.reactive(dt.date.today())
 start_time = solara.reactive(dt.time(0,0,0))

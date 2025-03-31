@@ -5,8 +5,8 @@ from IPython.display import display
 from flood_adapt.api.scenarios import get_scenarios
 from flood_adapt.dbs_classes.database import Database
 
-from draw_utils import _handle_draw, draw_map
-from plot_utils import plot_floodmap, plot_damage_agg, plot_damage_build
+from demonstrator.utils.draw_utils import _handle_draw, draw_map
+from demonstrator.utils.plot_utils import plot_floodmap, plot_damage_agg, plot_damage_build
 
 def _on_checkbox_change(checkbox, check_list):
     for check in check_list:

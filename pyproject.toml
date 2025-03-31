@@ -1,0 +1,22 @@
+[build-system]
+requires = ["flit_core >=3.4.0,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "demonstrator"
+authors = [
+    { name = "Willem Tromp", email = "willem.tromp@deltares.nl" },
+    { name = "Rieke Santjer", email = "rieke.santjer@deltares.nl" },
+]
+dependencies = [
+    "flood_adapt@git+https://github.com/Deltares-research/FloodAdapt.git@76ab1805425aca6496e38529e7e1c404f08b9e26",
+    "ipyleaflet",
+    "jupyter",
+    "leafmap",
+    "mapclassify",
+    "solara",
+    "pip>=23.1.2"
+]
+requires-python = ">=3.11"
+readme = "README.md"
+dynamic = ["version", "description"]
