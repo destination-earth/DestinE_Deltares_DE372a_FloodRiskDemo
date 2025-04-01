@@ -16,7 +16,6 @@ from demonstrator.utils.plot_utils import plot_metrics
 @solara.component
 def Page(database_fn, unit_system="metric"):
 
-    view = solara.use_reactive(None)
     tab = solara.use_reactive("Event")
     geom = solara.use_reactive(None)
     scenario_metrics = solara.use_reactive(None)
@@ -35,40 +34,47 @@ def Page(database_fn, unit_system="metric"):
 
     m = draw_map_controls(center)
 
-    with solara.Columns():
-        with solara.Column(style={"object-fit": "scale-down"}):
+    with solara.Column():
+
+        with solara.AppBarTitle():
+            solara.lab.ThemeToggle()
+            solara.Text("Demonstrator")
+        
+        with solara.Sidebar():
+            SettingsTabs(selected_tab=tab, selected_geom=geom)
+        with solara.Column():
+
             TabVisualisation(m, tab, geom, scenario_metrics)
 
-        with solara.Column(style={"display": "flex", "flex_flow": "flex-wrap"}):
-            SettingsTabs(selected_tab=tab, selected_view=view, selected_geom=geom)
-
-    if scenario_metrics.value is not None:
-        plot_metrics(scenario_metrics.value)
+            if scenario_metrics.value is not None:
+                plot_metrics(scenario_metrics.value)
 
     
 @solara.component
-def SettingsTabs(selected_tab, selected_view, selected_geom):
+def SettingsTabs(selected_tab, selected_geom):
+    tab_index = solara.use_reactive(0)
+    tabs = [
+        "Event",
+        "Projections",
+        "Measures",
+        "Strategy",
+        "Scenario",
+        "Run"
+    ]
 
-    with solara.Row(style={"justify-content": "flex-start","display": "flex", "flex_flow": "flex-wrap"}):
-        solara.Button("Event", on_click=lambda: (selected_tab.set('Event'), selected_view.set(None)))
-        solara.Button("Projections", on_click=lambda: (selected_tab.set('Projections'), selected_view.set(None)))
-        solara.Button("Measures", on_click=lambda: (selected_tab.set('Measures'), selected_view.set(None)))
-        solara.Button("Strategy", on_click=lambda: (selected_tab.set('Strategy'), selected_view.set(None)))
-        solara.Button("Scenario", on_click=lambda: (selected_tab.set('Scenario'), selected_view.set(None)))
-        solara.Button("Run", on_click=lambda: (selected_tab.set('Run'), selected_view.set(None)))            
- 
-    match selected_tab.value:
-        case "Event":
+    with solara.lab.Tabs(value=tab_index, lazy=True, background_color="primary", dark=True):
+        selected_tab.set(tabs[tab_index.value])
+        with solara.lab.Tab("Event"):
             TabEvent()
-        case "Projections":
-            TabProjections()
-        case "Measures":
+        with solara.lab.Tab("Projections"):
+            TabProjections()     
+        with solara.lab.Tab("Measures"):
             TabMeasures(selected_geom)
-        case "Strategy":
+        with solara.lab.Tab("Strategy"):
             TabStrategy()
-        case "Scenario":
+        with solara.lab.Tab("Scenario"):
             TabScenario()
-        case "Run":
+        with solara.lab.Tab("Run"):
             TabRun()
 
 

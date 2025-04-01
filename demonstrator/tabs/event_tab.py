@@ -77,15 +77,11 @@ def _display_event_builder(EVENT_TYPE, EVENT_TAB, FORCING_NAME, FORCING_SOURCE, 
         solara.Markdown(f"**Event type {etype} not supported**", style={"color": "red"})
         return
 
-    with solara.Row(gap="10px", style={"justify-content": "flex-start", "width": "80%"}):
-        solara.Button(label="Time", on_click=lambda: EVENT_TAB.set("Time"))
-        solara.Button(label="Forcing", on_click=lambda: EVENT_TAB.set("Forcing"))
-
-    match EVENT_TAB.value:
-        case "Time":
+    with solara.lab.Tabs(grow=True):
+        with solara.lab.Tab("Time"):
             EventTimeTab()
-        case "Forcing":
-            EventForcingTab(etype,FORCING_NAME, FORCING_SOURCE, FORCING_LIST)
+        with solara.lab.Tab("Forcing"):
+            EventForcingTab(etype, FORCING_NAME, FORCING_SOURCE, FORCING_LIST)
 
 def _parse_forcing_list(forcing_list):
     forcing_dict = {}
