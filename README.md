@@ -4,7 +4,7 @@ Generic Adaptation Modelling Framework Demonstrator
 This package implements the Generic Adaptation Modelling Framework (GAMF) developed in the Destination Earth 372 project Lot 1 for flood events. It provides a user interface built using [solara](https://solara.dev/) to interact with the [FloodAdapt](https://github.com/Deltares-research/FloodAdapt) backend.
 #### **Warning**:
 This demonstrator is a **prototype**. Not all FloodAdapt functionality is implemented.  
-To make full use of the demonstrator, a [FloodAdapt database](https://github.com/Deltares-research/FloodAdapt?tab=readme-ov-file#configure-database) is needed. To help set one up, or be provided with an example, please contact *\<insert contact person\>*. Model executables are assumed to be part of the FloodAdapt database under the `system` directory. To change this location, adapt the `Settings` in the `demonstrator/front.py` file. To change where the FloodAdapt database itself is located, adapt the `app.py` file *(subject to later change)*. Some familiarity with FloodAdapt is recommended when using this demonstrator.
+To make full use of the demonstrator, a [FloodAdapt database]([https://github.com/Deltares-research/FloodAdapt?tab=readme-ov-file#configure-database](https://deltares-research.github.io/FloodAdapt/3_setup_guide/database.html)) is needed. To help set one up, or be provided with an example, please contact *\<insert contact person\>*. Essential to a FloodAdapt database are working [SFINCS](https://sfincs.readthedocs.io/en/latest/) and [Delft-FIAT](https://www.deltares.nl/en/software-and-data/products/delft-fiat-flood-impact-assessment-tool) models for flood extent/water depth and damage calculations. To set up those models, or update existing models, please consult [here](https://github.com/Deltares/hydromt_sfincs) for SFINCS and [here](https://github.com/Deltares/hydromt_fiat) for Delft-FIAT (experience or familiarity with the respective models recommended). To set up a FloodAdapt database around pre-existing SFINCS and Delft-FIAT models, please consult [here](https://deltares-research.github.io/FloodAdapt/3_setup_guide/database.html#configuration-file-attributes) Model executables are assumed to be part of the FloodAdapt database under the `system` directory. To change this location, adapt the `Settings` in the `demonstrator/front.py` file. To change where the FloodAdapt database itself is located, adapt the `app.py` file. Some familiarity with FloodAdapt is recommended when using this demonstrator.
 
 
 Installation
@@ -15,6 +15,19 @@ To manage the python environment we recommend using [mamba](https://mamba.readth
 ```bash
 git clone git@github.com:interTwin-eu/DT-flood.git
 cd DT-flood
+git checkout de372
+cd Demonstrator
+mamba env create -f environment.yml
+mamba activate de372
+```
+
+The demonstrator does not rely on any other components in the DT-flood repository that are not in this directory. So an alternative to the above installation instructions that does not also clone the rest of the DT-flood repository to your machine is to do the following:
+
+```bash
+git clone git@github.com:interTwin-eu/DT-flood.git --no-checkout DT-flood
+cd DT-flood
+git sparse-checkout init
+git sparse-checkout add Demonstrator
 git checkout de372
 cd Demonstrator
 mamba env create -f environment.yml
