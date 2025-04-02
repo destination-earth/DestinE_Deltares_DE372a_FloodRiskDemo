@@ -29,15 +29,15 @@ With the `de372` environment activated, the demonstrator is launched by calling 
 Using the Demonstrator
 ----------------------
 
-The interface is split into two sections: an interactive map on the left and various tabs for configuring FloodAdapt scenarios on the right.
+The interface is split into two sections: an interactive map as the main section and various tabs for configuring FloodAdapt scenarios in the sidebar.
 
 ### Interactive Map
 
-The interactive map allows the user to loop around the area for which the FloodAdapt database is configured. When the relevant tabs on the right are selected, tools are available to draw lines or polygons or place markers on the map. Below the map is a dropdown menu listing scenarios that have succesfully run. Selecting a scenario allows the user to plot various outputs on the map (or in the case of metrics, below the map). Note that rendering the plots may take some time depending on the size of the output. Switching tabs on the right does not reset rendering the plots, though it is recommended to disable the plots before switching tabs as the performance may suffer with plots enabled.
+The interactive map allows the user to loop around the area for which the FloodAdapt database is configured. When the relevant tabs in the sidebar are selected, tools are available to draw lines or polygons or place markers on the map. Below the map is a dropdown menu listing scenarios that have succesfully run. Selecting a scenario allows the user to plot various outputs on the map (or in the case of metrics, below the map). Note that rendering the plots may take some time depending on the size of the output. Switching tabs on the right does not reset rendering the plots, though it is recommended to disable the plots before switching tabs as the performance may suffer with plots enabled.
 
 ### Configuration Tabs
 
-The tabs on the right allow a user to configure everything needed to create and run a FloodAdapt scenario. For more details on Events, Projections, Measures, and Strategies that make up a Scenario, please consult the [FloodAdapt documentation](https://deltares-research.github.io/FloodAdapt/). Here we run through the functionalities of the corresponding tabs specific to the demonstrator.
+The tabs in the sidebar allow a user to configure everything needed to create and run a FloodAdapt scenario. For more details on Events, Projections, Measures, and Strategies that make up a Scenario, please consult the [FloodAdapt documentation](https://deltares-research.github.io/FloodAdapt/). Here we run through the functionalities of the corresponding tabs specific to the demonstrator.
 
 #### 1. Events
 
@@ -49,7 +49,7 @@ This tab allows a user to configure a projection that modifies parts of either t
 
 #### 3. Measures
 
-THis tab allows a user to configure a measure to be part of the strategy that is applied to the scenario. Accessing this tab enables tools to draw on the interactive map. At the bottom of the tab is displayed what the current active geometry is that will accompany the measure configuration. Note that only one geometry can be active despite multiple being drawn on the map. Also note that a check whether the active geometry type is compatible with the selected measure type happens only when saving the measure. Once a measure has been fully specified, the `Save Measure` button will save it to the database for later use.
+This tab allows a user to configure a measure to be part of the strategy that is applied to the scenario. Accessing this tab enables tools to draw on the interactive map. At the bottom of the tab is displayed what the current active geometry is that will accompany the measure configuration. Note that only one geometry can be active despite multiple being drawn on the map. Also note that a check whether the active geometry type is compatible with the selected measure type happens only when saving the measure. Once a measure has been fully specified, the `Save Measure` button will save it to the database for later use.
 
 #### 4. Strategy
 
@@ -62,5 +62,14 @@ This tab allows a user to configure a new scenario by specifying one of each of 
 #### 6. Run
 
 This tab allows a user to execute a previously defined scenario by selecting a valid scenario from the dropdown menu and pressing the `Run Scenario` button. Any feedback or logging by FloodAdapt or the models themselves are printed to the terminal from which the demonstrator was launched. Once a scenario has been succesfully run, it becomes available in the dropdown menu below the map on the left for plotting the output.
+
+Destination Earth Climate DT Data
+---------------------------------
+
+The notebook `dt-climate-data.ipynb` provides an example of how to download DT Climate data using [earthkit](https://earthkit.readthedocs.io/en/latest/index.html) and [polytope](https://polytope.readthedocs.io/en/latest/) and some basic processing for usage by [HydroMT](https://github.com/Deltares/hydromt) or FloodAdapt (which uses HydroMT in the backend). Using this notebook requires prior authentication using the `desp-authentication.py` script or through a token in the file `~/polytopeapirc` (which the authentication script creates). See [here](https://github.com/destination-earth-digital-twins/polytope-examples) for more details and further examples of working with DT Climate data.
+
+The process of downloading and processing DT Climate data, and prepare them in a FloodAdapt event is not part of the demonstrator proper. Downloading and processing the data (especially interpolating to a regulat lat-lon grid) can take some time. This breaks the interactive nature of the demonstrator and FloodAdapt. Instead we advice to prepare the the desired data files beforehand and use FloodAdapt/the demonstrator to quickly run and inspect scenarios which use the pre-prepared data files. For rainfall and wind there are options to build events using user-specified csv files. However, coastal waterlevels and river discharges are not part of the DT Climate datasets. To use DT Climate data in scenarios / areas where these two forcing types are relevant or dominant, coastal hydrodynamics / hydrological models forced with DT Climate data need to run first. It is up to the user to do this before using the demonstrator.
+#### **Warning**:
+Using DT Climate precipation, winds, and mean sea level pressure together with coastal waterlevels from a different source is dynamically inconsistent and may lead to inaccurate / physically incorrect results.
 
  
